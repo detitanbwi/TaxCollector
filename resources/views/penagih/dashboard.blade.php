@@ -22,7 +22,7 @@
 
 <!-- Result Card -->
 @if(isset($pajak))
-<div class="bg-white rounded-2xl shadow-md border border-slate-100 overflow-hidden relative" x-data="twinAction({{ $pajak->id }}, '{{ $pajak->nopol }}', '{{ addslashes($pajak->nama_pemilik) }}', {{ $pajak->nominal }}, {{ $pajak->pkb }}, {{ $pajak->opsen }}, '{{ addslashes($pajak->jenis_kendaraan) }}', '{{ addslashes($pajak->merek_nama) }}', '{{ addslashes($pajak->merek_type) }}', '{{ $pajak->th_buat }}', '{{ $pajak->masa_laku }}')">
+<div class="bg-white rounded-2xl shadow-md border border-slate-100 overflow-hidden relative" x-data="twinAction({{ $pajak->id }}, '{{ $pajak->nopol }}', '{{ addslashes($pajak->nama_pemilik) }}', {{ $pajak->nominal }}, {{ $pajak->pkb }}, {{ $pajak->opsen }}, '{{ addslashes($pajak->jenis_kendaraan) }}', '{{ addslashes($pajak->merek_nama) }}', '{{ addslashes($pajak->merek_type) }}', '{{ $pajak->th_buat }}', '{{ $pajak->masa_laku }}', {{ json_encode($whatsappFormat ?? '') }})">
     
     <div class="absolute top-0 right-0 left-0 h-2 bg-indigo-600"></div>
     
@@ -104,16 +104,27 @@
 <!-- Alpine.js logic -->
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
-    function twinAction(id, nopol, nama, nominal, pkb, opsen, jenis, merek, type, th, masa_laku) {
+    function twinAction(id, nopol, nama, nominal, pkb, opsen, jenis, merek, type, th, masa_laku, templateFormat) {
         return {
             async sendWhatsApp() {
                 const formattedNominal = new Intl.NumberFormat('id-ID').format(nominal);
                 const formattedPkb = new Intl.NumberFormat('id-ID').format(pkb);
                 const formattedOpsen = new Intl.NumberFormat('id-ID').format(opsen);
-                const baseUrl = 'https://namainstansi.go.id/pajak/tagihan/'; 
                 
-                const message = `Selamat pagi/siang Bapak/Ibu ${nama},\n\nMengingatkan kewajiban Pajak Kendaraan Bermotor (PKB) untuk Kendaraan Anda:\n\n• Nopol: ${nopol}\n• Kendaraan: ${merek} ${type} (${th})\n• PKB: Rp ${formattedPkb}\n• Opsen: Rp ${formattedOpsen}\n---------------------------\n• Total Tagihan: Rp ${formattedNominal}\n• Masa Laku s.d: ${masa_laku}\n\nMohon untuk segera melakukan pembayaran sebelum jatuh tempo untuk menghindari sanksi administratif.\n\nPembayaran dapat dilakukan di Loket Samsat, Indomaret, Alfamart, atau platform online resmi.\n\nLink keabsahan tagihan:\n${baseUrl}${nopol}`;
+                let message = templateFormat || `Selamat pagi/siang Bapak/Ibu ${nama},\n\nMengingatkan kewajiban Pajak Kendaraan Bermotor (PKB) untuk Kendaraan Anda:\n\n• Nopol: ${nopol}\n• Kendaraan: ${merek} ${type} (${th})\n• PKB: Rp ${formattedPkb}\n• Opsen: Rp ${formattedOpsen}\n---------------------------\n• Total Tagihan: Rp ${formattedNominal}\n• Masa Laku s.d: ${masa_laku}\n\nMohon untuk segera melakukan pembayaran sebelum jatuh tempo untuk menghindari sanksi administratif.\n\nPembayaran dapat dilakukan di Loket Samsat, Indomaret, Alfamart, atau platform online resmi.\n\nLink keabsahan tagihan:\nhttps://namainstansi.go.id/pajak/tagihan/${nopol}`;
                 
+                // Replace variables
+                message = message.replace(/{nopol}/g, nopol)
+                                 .replace(/{nama}/g, nama)
+                                 .replace(/{merek}/g, merek)
+                                 .replace(/{type}/g, type)
+                                 .replace(/{th}/g, th)
+                                 .replace(/{jenis}/g, jenis)
+                                 .replace(/{pkb}/g, formattedPkb)
+                                 .replace(/{opsen}/g, formattedOpsen)
+                                 .replace(/{nominal}/g, formattedNominal)
+                                 .replace(/{masa_laku}/g, masa_laku);
+
                 const waUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
 
                 // Perform AJAX request to update status

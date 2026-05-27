@@ -25,6 +25,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('pajak/import', [PajakTagihanController::class, 'import'])->name('pajak.import');
     Route::post('pajak/bulk-delete', [PajakTagihanController::class, 'bulkDelete'])->name('pajak.bulk-delete');
     Route::resource('pajak', PajakTagihanController::class);
+    Route::get('settings', [\App\Http\Controllers\SettingController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [\App\Http\Controllers\SettingController::class, 'update'])->name('settings.update');
 });
 
 Route::middleware(['auth', 'role:penagih'])->prefix('penagih')->name('penagih.')->group(function () {

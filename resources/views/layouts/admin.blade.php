@@ -32,6 +32,9 @@
                 <a href="{{ route('admin.users.index') }}" class="block px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('admin.users.*') ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
                     Manajemen Pengguna
                 </a>
+                <a href="{{ route('admin.settings.edit') }}" class="block px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('admin.settings.*') ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                    Pengaturan WA
+                </a>
             </nav>
             <div class="p-4 bg-slate-950">
                 <div class="text-sm text-slate-400 mb-2 truncate">Halo, {{ auth()->user()->name }}</div>
