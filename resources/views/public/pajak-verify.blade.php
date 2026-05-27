@@ -18,7 +18,7 @@
 
     <!-- Top Secure Header -->
     <header class="bg-indigo-650 text-white shadow-sm sticky top-0 z-50 py-3.5 border-b border-indigo-700/30">
-        <div class="px-4 max-w-lg mx-auto w-full flex items-center justify-between">
+        <div class="px-4 max-w-lg mx-auto w-full flex items-center justify-center">
             <div class="flex items-center gap-2">
                 <!-- Official crest style svg icon -->
                 <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20">
@@ -30,10 +30,6 @@
                     <div class="font-black text-xs uppercase tracking-wider leading-none">BAPENDA DIGITAL</div>
                     <div class="text-[9px] text-indigo-150 font-medium tracking-tight">Sistem Verifikasi Keabsahan Tagihan</div>
                 </div>
-            </div>
-            <div class="flex items-center gap-1 bg-white/10 px-2.5 py-1 rounded-full border border-white/10 text-[9px] font-bold text-indigo-100 uppercase tracking-wider">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Secure SSL</span>
             </div>
         </div>
     </header>
