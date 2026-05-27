@@ -17,7 +17,7 @@
 <body class="text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
     <!-- Top Secure Header -->
-    <header class="bg-indigo-650 text-white shadow-sm sticky top-0 z-50 py-3.5 border-b border-indigo-700/30">
+    <header class="bg-indigo-600 text-white shadow-sm sticky top-0 z-50 py-3.5 border-b border-indigo-700/30">
         <div class="px-4 max-w-lg mx-auto w-full flex items-center justify-center">
             <div class="flex items-center gap-2">
                 <!-- Official crest style svg icon -->
@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     <div class="font-black text-xs uppercase tracking-wider leading-none">BAPENDA DIGITAL</div>
-                    <div class="text-[9px] text-indigo-150 font-medium tracking-tight">Sistem Verifikasi Keabsahan Tagihan</div>
+                    <div class="text-[9px] text-indigo-200 font-medium tracking-tight">Sistem Verifikasi Keabsahan Tagihan</div>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
                             </div>
                             <div>
                                 <span class="text-[10px] text-slate-400 font-semibold block mb-0.5">Jatuh Tempo Pajak</span>
-                                <span class="text-xs font-black text-indigo-650">{{ $pajak->masa_laku ?: '-' }}</span>
+                                <span class="text-xs font-black text-indigo-600">{{ $pajak->masa_laku ?: '-' }}</span>
                             </div>
                         </div>
                     </div>

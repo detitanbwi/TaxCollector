@@ -19,7 +19,7 @@
                 class="block w-full h-11 rounded-xl border border-slate-200 pl-10 pr-10 text-xs font-semibold text-slate-700 placeholder:text-slate-400 placeholder:font-medium focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none shadow-sm transition-all duration-200"
                 autocomplete="off">
             @if(request('search'))
-                <a href="{{ route('penagih.dashboard') }}" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-indigo-650 transition-colors" title="Clear Search">
+                <a href="{{ route('penagih.dashboard') }}" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-indigo-700 transition-colors" title="Clear Search">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
                     </svg>
@@ -99,7 +99,7 @@
                                 <span class="text-slate-400 ml-1">({{ $pajak->nomor_hp }})</span>
                             @endif
                         </div>
-                        <div class="text-indigo-650 font-bold whitespace-nowrap flex items-center gap-1.5">
+                        <div class="text-indigo-600 font-bold whitespace-nowrap flex items-center gap-1.5">
                             <span class="text-slate-400 font-medium mr-1 hidden sm:inline">Jatuh Tempo:</span>
                             <span>{{ $pajak->masa_laku ?: '-' }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">

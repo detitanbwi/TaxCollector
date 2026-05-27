@@ -53,10 +53,10 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 -translate-y-2"
-         class="bg-indigo-50 border-b border-slate-100 px-6 py-3 text-xs text-indigo-850 flex items-center justify-between gap-4 flex-wrap shadow-inner"
+         class="bg-indigo-50 border-b border-slate-100 px-6 py-3 text-xs text-indigo-900 flex items-center justify-between gap-4 flex-wrap shadow-inner"
          style="display: none;">
         <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-indigo-650 animate-pulse"></span>
+            <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
             <span>
                 <span x-text="isAllMatchingSelected ? 'Seluruh ' + totalRecords + ' data terpilih.' : 'Semua ' + currentPageIds.length + ' data pada halaman ini terpilih.'"></span>
             </span>
@@ -76,7 +76,7 @@
             <div class="flex flex-col items-center gap-2">
                 <div class="relative w-9 h-9">
                     <div class="absolute inset-0 rounded-full border-4 border-slate-100"></div>
-                    <div class="absolute inset-0 rounded-full border-4 border-t-indigo-650 animate-spin"></div>
+                    <div class="absolute inset-0 rounded-full border-4 border-t-indigo-600 animate-spin"></div>
                 </div>
                 <span class="text-xxs font-bold text-indigo-950 uppercase tracking-wider">Memuat Data...</span>
             </div>

@@ -14,7 +14,7 @@
 
 <!-- Back Button -->
 <div class="mb-5">
-    <a href="{{ route('penagih.dashboard') }}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-indigo-650 transition-colors">
+    <a href="{{ route('penagih.dashboard') }}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-indigo-700 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
@@ -97,7 +97,7 @@
                 </div>
                 <div>
                     <span class="text-[10px] text-slate-400 font-semibold block mb-0.5">Jatuh Tempo Pajak</span>
-                    <span class="text-xs font-bold text-indigo-650">{{ $pajak->masa_laku ?: '-' }}</span>
+                    <span class="text-xs font-bold text-indigo-600">{{ $pajak->masa_laku ?: '-' }}</span>
                 </div>
             </div>
         </div>
@@ -123,7 +123,7 @@
                         <span class="text-xs font-black text-indigo-950 uppercase tracking-wider block">Total Tagihan</span>
                         <span class="text-[10px] text-slate-400 font-semibold block">Sudah termasuk denda/biaya</span>
                     </div>
-                    <span class="text-xl font-black text-indigo-650">Rp {{ number_format($pajak->nominal, 0, ',', '.') }}</span>
+                    <span class="text-xl font-black text-indigo-600">Rp {{ number_format($pajak->nominal, 0, ',', '.') }}</span>
                 </div>
             </div>
         </div>
