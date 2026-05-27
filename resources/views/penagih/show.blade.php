@@ -2,6 +2,16 @@
 
 @section('content')
 
+<!-- Custom Toast Notification -->
+<div id="toastNotification" class="fixed bottom-4 right-4 z-50 transform translate-y-10 opacity-0 transition-all duration-300 pointer-events-none max-w-sm">
+    <div class="bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded-xl shadow-lg border border-slate-800 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        <span id="toastMessage">Nomor HP berhasil disalin!</span>
+    </div>
+</div>
+
 <!-- Back Button -->
 <div class="mb-5">
     <a href="{{ route('penagih.dashboard') }}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-indigo-650 transition-colors">
@@ -48,7 +58,7 @@
                     @if($pajak->nomor_hp)
                         <div class="flex items-center gap-1.5">
                             <span class="text-xs font-bold text-slate-800">{{ $pajak->nomor_hp }}</span>
-                            <button onclick="navigator.clipboard.writeText('{{ $pajak->nomor_hp }}'); alert('Nomor HP berhasil disalin!');" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Salin Nomor HP">
+                            <button onclick="navigator.clipboard.writeText('{{ $pajak->nomor_hp }}'); showToast('Nomor HP berhasil disalin!');" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Salin Nomor HP">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                                 </svg>
@@ -190,6 +200,20 @@
 
         // Open WA Link in new tab
         window.open(waUrl, '_blank');
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toastNotification');
+        const msgSpan = document.getElementById('toastMessage');
+        msgSpan.innerText = message;
+        
+        toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+        toast.classList.add('translate-y-0', 'opacity-100');
+        
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+        }, 2500);
     }
 </script>
 

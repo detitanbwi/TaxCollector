@@ -30,9 +30,12 @@ class PajakTagihanController extends Controller
             $query->orderBy('id', 'desc');
         }
 
+        // Clone query to get all matching IDs (before pagination) and cast to string to match JavaScript types
+        $allIds = (clone $query)->pluck('id')->map(fn($id) => (string)$id)->toArray();
+
         $pajak = $query->paginate(20)->withQueryString();
 
-        return view('admin.pajak.index', compact('pajak'));
+        return view('admin.pajak.index', compact('pajak', 'allIds'));
     }
 
     public function downloadTemplate()

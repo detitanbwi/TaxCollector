@@ -22,18 +22,19 @@
     </div>
 </div>
 
+<div id="pajakTableWrapper">
 <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden" x-data="pajakTable()">
     
     <!-- Toolbar -->
     <div class="p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/50">
-        <form method="GET" action="{{ route('admin.pajak.index') }}" class="flex-1 max-w-md flex items-center gap-2">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nopol atau Nama Pemilik..." class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+        <form id="adminSearchForm" method="GET" action="{{ route('admin.pajak.index') }}" class="flex-1 max-w-md flex items-center gap-2">
+            <input type="text" id="adminSearchInput" name="search" value="{{ request('search') }}" placeholder="Cari Nopol atau Nama Pemilik..." class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" autocomplete="off">
             <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm whitespace-nowrap">
                 Cari
             </button>
         </form>
 
-        <form action="{{ route('admin.pajak.bulk-delete') }}" method="POST" x-ref="deleteForm" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data terpilih?');">
+        <form action="{{ route('admin.pajak.bulk-delete') }}" method="POST" x-ref="deleteForm" @submit.prevent="showDeleteConfirm = true">
             @csrf
             <template x-for="id in selectedIds" :key="id">
                 <input type="hidden" name="ids[]" :value="id">
@@ -44,13 +45,49 @@
         </form>
     </div>
 
+    <!-- Banner for Select All Matching -->
+    <div x-show="showAllSelectionBanner()" 
+         x-transition:enter="transition ease-out duration-250"
+         x-transition:enter-start="opacity-0 -translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-2"
+         class="bg-indigo-50 border-b border-slate-100 px-6 py-3 text-xs text-indigo-850 flex items-center justify-between gap-4 flex-wrap shadow-inner"
+         style="display: none;">
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-indigo-650 animate-pulse"></span>
+            <span>
+                <span x-text="isAllMatchingSelected ? 'Seluruh ' + totalRecords + ' data terpilih.' : 'Semua ' + currentPageIds.length + ' data pada halaman ini terpilih.'"></span>
+            </span>
+        </div>
+        <button type="button" 
+                @click="toggleAllMatching()" 
+                class="font-bold underline text-indigo-700 hover:text-indigo-900 transition-colors focus:outline-none"
+                x-text="isAllMatchingSelected ? 'Batalkan pilihan seluruh data' : 'Pilih seluruh (' + totalRecords + ') data'">
+        </button>
+    </div>
+
     <!-- Table -->
-    <div class="overflow-x-auto">
+    <div class="relative">
+        <!-- Table Loading Spinner Overlay (Inside x-data) -->
+        <div id="tableLoadingOverlay" 
+             class="absolute inset-0 bg-white/75 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center hidden opacity-0 transition-all duration-200">
+            <div class="flex flex-col items-center gap-2">
+                <div class="relative w-9 h-9">
+                    <div class="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                    <div class="absolute inset-0 rounded-full border-4 border-t-indigo-650 animate-spin"></div>
+                </div>
+                <span class="text-xxs font-bold text-indigo-950 uppercase tracking-wider">Memuat Data...</span>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 text-sm uppercase tracking-wider">
                     <th class="p-4 font-medium w-12">
-                        <input type="checkbox" x-model="selectAll" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                        <input type="checkbox" :checked="selectAll" @change="toggleSelectAll($event)" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
                     </th>
                     <th class="p-4 font-medium text-xs">Nopol</th>
                     <th class="p-4 font-medium text-xs">Nama Pemilik</th>
@@ -100,13 +137,57 @@
             </tbody>
         </table>
     </div>
+    </div>
     
     @if($pajak->hasPages())
     <div class="p-4 border-t border-slate-100 bg-white">
         {{ $pajak->links() }}
     </div>
+
+    <!-- Deletion Confirmation Modal -->
+    <div x-show="showDeleteConfirm" 
+         class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95"
+         style="display: none;">
+         
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="showDeleteConfirm = false"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative bg-white rounded-3xl shadow-xl border border-slate-100 max-w-sm w-full p-6 text-center z-10 animate-in fade-in zoom-in-95 duration-200">
+            <!-- Trash Icon -->
+            <div class="w-14 h-14 rounded-full bg-red-50 text-red-650 flex items-center justify-center border-4 border-white shadow-sm mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </div>
+            
+            <h3 class="text-base font-black text-slate-900 uppercase tracking-wide mb-2">Hapus Data Terpilih?</h3>
+            <p class="text-xs text-slate-500 mb-6 leading-relaxed">
+                Apakah Anda yakin ingin menghapus <span class="font-extrabold text-slate-800" x-text="selectedIds.length"></span> data pajak terpilih secara permanen? Tindakan ini tidak dapat dibatalkan.
+            </p>
+            
+            <div class="flex items-center gap-3">
+                <button type="button" @click="showDeleteConfirm = false" class="flex-1 h-11 px-4 border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 active:bg-slate-100 rounded-xl text-xs font-bold transition-all">
+                    Batal
+                </button>
+                <button type="button" @click="showDeleteConfirm = false; $refs.deleteForm.submit()" class="flex-1 h-11 px-4 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-red-600/10 hover:shadow-red-600/20">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
     @endif
+
+
 </div>
+</div>
+
 
 <!-- Loading Spinner Overlay -->
 <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
@@ -208,21 +289,52 @@
     </div>
 </div>
 
+
 <!-- Alpine.js logic -->
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
     function pajakTable() {
         return {
             selectedIds: [],
-            get selectAll() {
-                const checkboxes = document.querySelectorAll('.row-checkbox');
-                return checkboxes.length > 0 && this.selectedIds.length === checkboxes.length;
+            allMatchingIds: @json($allIds),
+            totalRecords: {{ $pajak->total() }},
+            currentPageIds: [],
+            showDeleteConfirm: false,
+            
+            init() {
+                this.currentPageIds = Array.from(document.querySelectorAll('.row-checkbox')).map(cb => cb.value);
             },
-            set selectAll(value) {
-                if (value) {
-                    this.selectedIds = Array.from(document.querySelectorAll('.row-checkbox')).map(cb => cb.value);
+            
+            get selectAll() {
+                return this.currentPageIds.length > 0 && this.currentPageIds.every(id => this.selectedIds.includes(id));
+            },
+            
+            get isAllMatchingSelected() {
+                return this.selectedIds.length === this.totalRecords;
+            },
+            
+            toggleSelectAll(event) {
+                const checked = event.target.checked;
+                if (checked) {
+                    this.currentPageIds.forEach(id => {
+                        if (!this.selectedIds.includes(id)) {
+                            this.selectedIds.push(id);
+                        }
+                    });
                 } else {
-                    this.selectedIds = [];
+                    this.selectedIds = this.selectedIds.filter(id => !this.currentPageIds.includes(id));
+                }
+            },
+            
+            showAllSelectionBanner() {
+                return this.selectAll && this.totalRecords > this.currentPageIds.length;
+            },
+            
+            toggleAllMatching() {
+                if (this.isAllMatchingSelected) {
+                    this.selectedIds = [...this.currentPageIds];
+                } else {
+                    this.selectedIds = [...this.allMatchingIds];
                 }
             }
         }
@@ -472,5 +584,108 @@
             hideLoading();
         }
     });
+
+    // Debounce AJAX real-time search & page transitions
+    let searchTimeout;
+    
+    function performAjaxSearch(url) {
+        const overlay = document.getElementById('tableLoadingOverlay');
+        if (overlay) {
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        }
+        
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            const wrapper = document.getElementById('pajakTableWrapper');
+            const newWrapper = doc.getElementById('pajakTableWrapper');
+            if (wrapper && newWrapper) {
+                wrapper.innerHTML = newWrapper.innerHTML;
+                
+                if (window.Alpine) {
+                    window.Alpine.initTree(wrapper);
+                }
+            }
+            
+            bindAjaxEvents();
+        })
+        .catch(error => {
+            console.error('AJAX Search Error:', error);
+            const overlay = document.getElementById('tableLoadingOverlay');
+            if (overlay) {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 200);
+            }
+        });
+    }
+
+    function bindAjaxEvents() {
+        const searchInput = document.getElementById('adminSearchInput');
+        const searchForm = document.getElementById('adminSearchForm');
+        
+        if (searchInput && searchForm) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const query = searchInput.value;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('search', query);
+                    url.searchParams.delete('page'); // Reset page
+                    
+                    window.history.pushState({}, '', url.toString());
+                    performAjaxSearch(url.toString());
+                }, 600);
+            });
+            
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                clearTimeout(searchTimeout);
+                const query = searchInput.value;
+                const url = new URL(window.location.href);
+                url.searchParams.set('search', query);
+                url.searchParams.delete('page');
+                
+                window.history.pushState({}, '', url.toString());
+                performAjaxSearch(url.toString());
+            });
+            
+            // Restore focus and cursor position at the end
+            if (document.activeElement !== searchInput && searchInput.value) {
+                searchInput.focus();
+                const val = searchInput.value;
+                searchInput.value = '';
+                searchInput.value = val;
+            }
+        }
+        
+        // Intercept all pagination links inside #pajakTableWrapper to prevent full reload
+        const paginationLinks = document.querySelectorAll('#pajakTableWrapper .pagination a, #pajakTableWrapper a[rel="next"], #pajakTableWrapper a[rel="prev"]');
+        paginationLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                if (url) {
+                    window.history.pushState({}, '', url);
+                    performAjaxSearch(url);
+                }
+            });
+        });
+    }
+    
+    // Support browser Back/Forward navigation states
+    window.addEventListener('popstate', function() {
+        performAjaxSearch(window.location.href);
+    });
+    
+    // Initial AJAX binding on page load
+    bindAjaxEvents();
 </script>
 @endsection

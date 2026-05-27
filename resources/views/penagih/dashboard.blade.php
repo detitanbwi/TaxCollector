@@ -14,7 +14,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <input type="text" name="search" value="{{ request('search') }}" 
+            <input type="text" id="searchInput" name="search" value="{{ request('search') }}" 
                 placeholder="Cari Nopol, Nama Warga, atau Merek..." 
                 class="block w-full h-11 rounded-xl border border-slate-200 pl-10 pr-10 text-xs font-semibold text-slate-700 placeholder:text-slate-400 placeholder:font-medium focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none shadow-sm transition-all duration-200"
                 autocomplete="off">
@@ -201,8 +201,30 @@
             const parts = val.split('-');
             sortField.value = parts[0];
             orderField.value = parts[1];
-        }
     });
+
+    // Debounce real-time search
+    const searchInput = document.getElementById('searchInput');
+    const filterForm = document.getElementById('filterForm');
+    
+    if (searchInput && filterForm) {
+        let debounceTimer;
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                filterForm.submit();
+            }, 600); // 600ms delay to balance response speed and server load
+        });
+
+        // Focus and put cursor at the end of text on page load if search is active
+        if (searchInput.value) {
+            searchInput.focus();
+            const val = searchInput.value;
+            searchInput.value = '';
+            searchInput.value = val;
+        }
+    }
 </script>
 
 @endsection
