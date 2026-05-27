@@ -8,6 +8,11 @@ use App\Http\Controllers\PenagihController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        return auth()->user()->role === 'admin' 
+            ? redirect()->route('admin.dashboard') 
+            : redirect()->route('penagih.dashboard');
+    }
     return redirect()->route('login');
 });
 

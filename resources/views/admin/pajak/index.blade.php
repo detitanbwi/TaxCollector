@@ -465,5 +465,12 @@
     function formatRupiah(num) {
         return new Intl.NumberFormat('id-ID').format(num);
     }
+
+    // Auto-clear loading overlays when restored from back-forward cache (bfcache)
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            hideLoading();
+        }
+    });
 </script>
 @endsection
