@@ -33,6 +33,7 @@ Route::middleware(['auth', 'role:penagih'])->prefix('penagih')->name('penagih.')
     Route::get('/dashboard', [PenagihController::class, 'index'])->name('dashboard');
     Route::post('/search', [PenagihController::class, 'search'])->name('search');
     Route::post('/update-status/{id}', [PenagihController::class, 'updateStatus'])->name('update-status');
+    Route::get('/pajak/{id}', [PenagihController::class, 'show'])->name('pajak.show');
 });
 
 require __DIR__.'/auth.php';
