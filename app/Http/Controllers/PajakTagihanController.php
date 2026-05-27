@@ -81,7 +81,15 @@ class PajakTagihanController extends Controller
         ]);
 
         try {
-            $array = Excel::toArray(new class implements \Maatwebsite\Excel\Concerns\WithHeadingRow {}, $request->file('file'));
+            $array = Excel::toArray(new class implements \Maatwebsite\Excel\Concerns\WithHeadingRow, \Maatwebsite\Excel\Concerns\SkipsEmptyRows {
+                public function isEmptyWhen(array $row): bool
+                {
+                    // Hanya lewati baris yang benar-benar kosong (semua kolom bernilai null atau string kosong)
+                    return empty(array_filter($row, function ($value) {
+                        return $value !== null && trim($value) !== '';
+                    }));
+                }
+            }, $request->file('file'));
             
             $rows = $array[0] ?? [];
             if (empty($rows)) {
@@ -213,10 +221,13 @@ class PajakTagihanController extends Controller
                 ];
             })->toArray();
 
-            PajakTagihan::upsert($data, ['nopol'], [
-                'nama_pemilik', 'jenis_kendaraan', 'merek_nama', 'merek_type', 
-                'th_buat', 'pkb', 'opsen', 'nominal', 'masa_laku', 'masa_stnk', 'nomor_hp', 'updated_at'
-            ]);
+            $chunks = array_chunk($data, 500);
+            foreach ($chunks as $chunk) {
+                PajakTagihan::upsert($chunk, ['nopol'], [
+                    'nama_pemilik', 'jenis_kendaraan', 'merek_nama', 'merek_type', 
+                    'th_buat', 'pkb', 'opsen', 'nominal', 'masa_laku', 'masa_stnk', 'nomor_hp', 'updated_at'
+                ]);
+            }
 
             session()->flash('success', count($data) . ' data pajak berhasil diimpor.');
 

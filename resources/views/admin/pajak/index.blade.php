@@ -261,6 +261,9 @@
 
         fetch('{{ route("admin.pajak.preview-import") }}', {
             method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            },
             body: formData
         })
         .then(response => response.json().then(data => ({ status: response.status, data })))
@@ -388,33 +391,63 @@
         document.body.classList.remove('overflow-hidden');
     }
 
-    function submitImportData() {
+    async function submitImportData() {
         if (!parsedImportData || parsedImportData.length === 0) return;
 
-        showLoading('Menyimpan Data', 'Sedang melakukan bulk upsert data pajak ke database...');
-        closePreviewModal();
+        const dataToSave = parsedImportData; // Salin data ke variabel lokal agar tidak hilang saat modal ditutup
 
-        fetch('{{ route("admin.pajak.import") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ data: parsedImportData })
-        })
-        .then(response => response.json().then(data => ({ status: response.status, data })))
-        .then(({ status, data }) => {
-            hideLoading();
-            if (status === 200 && data.success) {
-                window.location.reload();
-            } else {
-                showErrorModal(data.message || 'Gagal menyimpan data pajak.');
+        showLoading('Menyimpan Data', `Sedang memproses 0 dari ${dataToSave.length} data...`);
+        closePreviewModal(); // Ini akan menutup modal dan mengeset parsedImportData = null, namun dataToSave tetap aman
+
+        const chunkSize = 300; // Batch per 300 data untuk menghindari Payload Too Large di Nginx
+        let successCount = 0;
+        let hasError = false;
+        let errorMessage = '';
+
+        for (let i = 0; i < dataToSave.length; i += chunkSize) {
+            const chunk = dataToSave.slice(i, i + chunkSize);
+            
+            try {
+                const response = await fetch('{{ route("admin.pajak.import") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ data: chunk })
+                });
+
+                // Coba parsing sebagai teks dulu untuk menangkap Nginx HTML error (seperti 413 Payload Too Large)
+                const textResponse = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(textResponse);
+                } catch (e) {
+                    throw new Error("Server mengembalikan response non-JSON (Kemungkinan Nginx Error): " + textResponse.substring(0, 100));
+                }
+
+                if (response.status === 200 && data.success) {
+                    successCount += chunk.length;
+                    document.getElementById('loadingSubtitle').innerText = `Menyimpan data... (${successCount} dari ${dataToSave.length})`;
+                } else {
+                    hasError = true;
+                    errorMessage = data.message || 'Gagal menyimpan sebagian data pajak.';
+                    break;
+                }
+            } catch (error) {
+                hasError = true;
+                errorMessage = error.message || 'Gagal terhubung dengan server saat menyimpan data.';
+                break;
             }
-        })
-        .catch(error => {
-            hideLoading();
-            showErrorModal('Gagal terhubung dengan server saat menyimpan data.');
-        });
+        }
+
+        hideLoading();
+        if (!hasError) {
+            window.location.reload();
+        } else {
+            showErrorModal(errorMessage);
+        }
     }
 
     function escapeHtml(text) {
