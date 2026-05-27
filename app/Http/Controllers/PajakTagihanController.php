@@ -262,7 +262,10 @@ class PajakTagihanController extends Controller
 
     public function verifyValidity($nopol)
     {
-        $pajak = PajakTagihan::where('nopol', 'like', $nopol)->first();
+        // Strip spaces to ensure robust search regardless of URL formatting or spaces
+        $cleanNopol = str_replace(' ', '', $nopol);
+        
+        $pajak = PajakTagihan::whereRaw("REPLACE(nopol, ' ', '') LIKE ?", [$cleanNopol])->first();
 
         return view('public.pajak-verify', compact('pajak', 'nopol'));
     }

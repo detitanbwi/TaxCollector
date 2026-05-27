@@ -144,9 +144,10 @@
         const formattedPkb = new Intl.NumberFormat('id-ID').format(pkb);
         const formattedOpsen = new Intl.NumberFormat('id-ID').format(opsen);
         
-        let message = templateFormat || `Selamat pagi/siang Bapak/Ibu \${nama},\n\nMengingatkan kewajiban Pajak Kendaraan Bermotor (PKB) untuk Kendaraan Anda:\n\n• Nopol: \${nopol}\n• Kendaraan: \${merek} \${type} (\${th})\n• PKB: Rp \${formattedPkb}\n• Opsen: Rp \${formattedOpsen}\n---------------------------\n• Total Tagihan: Rp \${formattedNominal}\n• Masa Laku s.d: \${masa_laku}\n\nMohon untuk segera melakukan pembayaran sebelum jatuh tempo untuk menghindari sanksi administratif.\n\nPembayaran dapat dilakukan di Loket Samsat, Indomaret, Alfamart, atau platform online resmi.\n\nLink keabsahan tagihan:\n\${window.location.origin}/pajak/tagihan/\${nopol}`;
+        const encodedNopol = encodeURIComponent(nopol);
+        let message = templateFormat || `Selamat pagi/siang Bapak/Ibu \${nama},\n\nMengingatkan kewajiban Pajak Kendaraan Bermotor (PKB) untuk Kendaraan Anda:\n\n• Nopol: \${nopol}\n• Kendaraan: \${merek} \${type} (\${th})\n• PKB: Rp \${formattedPkb}\n• Opsen: Rp \${formattedOpsen}\n---------------------------\n• Total Tagihan: Rp \${formattedNominal}\n• Masa Laku s.d: \${masa_laku}\n\nMohon untuk segera melakukan pembayaran sebelum jatuh tempo untuk menghindari sanksi administratif.\n\nPembayaran dapat dilakukan di Loket Samsat, Indomaret, Alfamart, atau platform online resmi.\n\nLink keabsahan tagihan:\n\${window.location.origin}/pajak/tagihan/\${encodedNopol}`;
         
-        const verificationUrl = window.location.origin + '/pajak/tagihan/' + nopol;
+        const verificationUrl = window.location.origin + '/pajak/tagihan/' + encodedNopol;
 
         // Replace variables
         message = message.replace(/https:\/\/namainstansi\.go\.id\/pajak\/tagihan\/{nopol}/g, verificationUrl)

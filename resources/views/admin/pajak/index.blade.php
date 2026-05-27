@@ -143,6 +143,7 @@
     <div class="p-4 border-t border-slate-100 bg-white">
         {{ $pajak->links() }}
     </div>
+    @endif
 
     <!-- Deletion Confirmation Modal -->
     <div x-show="showDeleteConfirm" 
@@ -182,7 +183,6 @@
             </div>
         </div>
     </div>
-    @endif
 
 
 </div>
