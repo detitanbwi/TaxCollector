@@ -253,4 +253,11 @@ class PajakTagihanController extends Controller
 
         return redirect()->route('admin.pajak.index')->with('success', 'Data terpilih berhasil dihapus.');
     }
+
+    public function verifyValidity($nopol)
+    {
+        $pajak = PajakTagihan::where('nopol', 'like', $nopol)->first();
+
+        return view('public.pajak-verify', compact('pajak', 'nopol'));
+    }
 }

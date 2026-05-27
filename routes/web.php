@@ -16,6 +16,8 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/pajak/tagihan/{nopol}', [PajakTagihanController::class, 'verifyValidity'])->name('pajak.tagihan.verify');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

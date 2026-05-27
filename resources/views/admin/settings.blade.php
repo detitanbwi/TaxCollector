@@ -70,6 +70,10 @@
                 <code class="font-bold text-indigo-800">{masa_laku}</code>
                 <span class="text-indigo-600 text-right">Masa Laku Pajak</span>
             </div>
+            <div class="flex justify-between border-b border-indigo-200/50 pb-1">
+                <code class="font-bold text-indigo-800">{link_keabsahan}</code>
+                <span class="text-indigo-600 text-right">Tautan Keabsahan Dokumen (Otomatis)</span>
+            </div>
         </div>
     </div>
 </div>
