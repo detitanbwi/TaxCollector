@@ -15,8 +15,11 @@ class PajakTagihanController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('nopol', 'like', "%{$search}%")
-                  ->orWhere('nama_pemilik', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('nopol', 'like', "%{$search}%")
+                  ->orWhere('nama_pemilik', 'like', "%{$search}%")
+                  ->orWhere('nomor_hp', 'like', "%{$search}%");
+            });
         }
 
         if ($request->filled('sort')) {

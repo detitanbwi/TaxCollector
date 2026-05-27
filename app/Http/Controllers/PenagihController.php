@@ -12,14 +12,15 @@ class PenagihController extends Controller
     {
         $query = PajakTagihan::query();
 
-        // Kolom Pencarian (Nopol / Nama / Alamat - nama_pemilik atau merek_nama)
+        // Kolom Pencarian (Nopol / Nama / Alamat - nama_pemilik, merek_nama, merek_type, atau nomor_hp)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('nopol', 'like', "%{$search}%")
                   ->orWhere('nama_pemilik', 'like', "%{$search}%")
                   ->orWhere('merek_nama', 'like', "%{$search}%")
-                  ->orWhere('merek_type', 'like', "%{$search}%");
+                  ->orWhere('merek_type', 'like', "%{$search}%")
+                  ->orWhere('nomor_hp', 'like', "%{$search}%");
             });
         }
 
