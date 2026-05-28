@@ -230,11 +230,7 @@
                         <input type="text" name="jenis_kendaraan" x-model="form.jenis_kendaraan" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-700 mb-1">Merek Nama</label>
-                        <input type="text" name="merek_nama" x-model="form.merek_nama" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-700 mb-1">Merek Type</label>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Merek / Tipe Kendaraan</label>
                         <input type="text" name="merek_type" x-model="form.merek_type" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
                     <div>
