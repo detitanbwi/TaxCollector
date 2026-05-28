@@ -20,12 +20,8 @@
     <header class="bg-indigo-600 text-white shadow-sm sticky top-0 z-50 py-3.5 border-b border-indigo-700/30">
         <div class="px-4 max-w-lg mx-auto w-full flex items-center justify-center">
             <div class="flex items-center gap-2">
-                <!-- Official crest style svg icon -->
-                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                </div>
+                <!-- App Logo -->
+                <img src="{{ asset('logo-pajak.png') }}" alt="Logo" class="h-8 w-auto rounded-full object-cover bg-white">
                 <div>
                     <div class="font-black text-xs uppercase tracking-wider leading-none">BAPENDA DIGITAL</div>
                     <div class="text-[9px] text-indigo-200 font-medium tracking-tight">Sistem Verifikasi Keabsahan Tagihan</div>

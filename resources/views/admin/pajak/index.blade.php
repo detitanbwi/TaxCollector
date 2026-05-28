@@ -115,6 +115,7 @@
                     <td class="p-4">
                         <div class="text-slate-800 font-semibold text-xs">{{ $p->merek_nama }} {{ $p->merek_type }}</div>
                         <div class="text-slate-400 text-xxs mt-0.5 uppercase">{{ $p->jenis_kendaraan }} • Th {{ $p->th_buat }}</div>
+                        <div class="text-indigo-500 font-medium text-xxs mt-1">Pajak: {{ $p->masa_laku ?: '-' }} | STNK: {{ $p->masa_stnk ?: '-' }}</div>
                     </td>
                     <td class="p-4 text-right">
                         <div class="font-bold text-slate-900 text-xs">Rp {{ number_format($p->nominal, 0, ',', '.') }}</div>
