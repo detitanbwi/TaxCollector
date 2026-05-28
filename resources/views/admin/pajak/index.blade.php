@@ -1,29 +1,35 @@
 @extends('layouts.admin')
 
 @section('content')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<div id="pajakTableWrapper" x-data="pajakTable()">
 <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
     <h1 class="text-2xl font-bold text-slate-900">Data Pajak</h1>
-    <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2">
-            <a href="{{ route('admin.pajak.download-template') }}" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Download Contoh Excel
-            </a>
-            <label for="file" class="cursor-pointer px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                Import Excel
-            </label>
-            <input type="file" name="file" id="file" class="hidden" accept=".xlsx, .csv" onchange="handleFileSelected(this)">
-        </div>
+    <div class="flex flex-wrap items-center gap-2">
+        <button type="button" @click="openFormModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Tambah Manual
+        </button>
+        <a href="{{ route('admin.pajak.download-template') }}" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download Contoh Excel
+        </a>
+        <label for="file" class="cursor-pointer px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            Import Excel
+        </label>
+        <input type="file" name="file" id="file" class="hidden" accept=".xlsx, .csv" onchange="handleFileSelected(this)">
     </div>
 </div>
 
-<div id="pajakTableWrapper">
-<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden" x-data="pajakTable()">
+<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
     
     <!-- Toolbar -->
     <div class="p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/50">
@@ -39,9 +45,6 @@
             <template x-for="id in selectedIds" :key="id">
                 <input type="hidden" name="ids[]" :value="id">
             </template>
-            <button type="button" @click="openFormModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm whitespace-nowrap">
-                Tambah Data
-            </button>
             <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed" :disabled="selectedIds.length === 0">
                 Hapus <span x-text="selectedIds.length > 0 ? '(' + selectedIds.length + ')' : ''"></span>
             </button>
@@ -239,15 +242,15 @@
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-700 mb-1">PKB</label>
-                        <input type="number" name="pkb" x-model="form.pkb" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input type="number" name="pkb" x-model="form.pkb" @input="form.nominal = (Number(form.pkb) || 0) + (Number(form.opsen) || 0)" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-700 mb-1">Opsen</label>
-                        <input type="number" name="opsen" x-model="form.opsen" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input type="number" name="opsen" x-model="form.opsen" @input="form.nominal = (Number(form.pkb) || 0) + (Number(form.opsen) || 0)" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-700 mb-1">Nominal Total <span class="text-red-500">*</span></label>
-                        <input type="number" name="nominal" x-model="form.nominal" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                        <input type="number" name="nominal" x-model="form.nominal" readonly class="w-full rounded-lg border-slate-300 bg-slate-50 text-slate-500 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 cursor-not-allowed" required>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-700 mb-1">Nomor HP</label>
@@ -255,11 +258,11 @@
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-700 mb-1">Masa Laku</label>
-                        <input type="text" name="masa_laku" x-model="form.masa_laku" placeholder="DD/MM/YYYY" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input type="text" name="masa_laku" x-model="form.masa_laku" x-init="flatpickr($el, {dateFormat: 'd/m/Y', allowInput: true})" placeholder="DD/MM/YYYY" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-700 mb-1">Masa STNK</label>
-                        <input type="text" name="masa_stnk" x-model="form.masa_stnk" placeholder="DD/MM/YYYY" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <input type="text" name="masa_stnk" x-model="form.masa_stnk" x-init="flatpickr($el, {dateFormat: 'd/m/Y', allowInput: true})" placeholder="DD/MM/YYYY" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
                     </div>
                 </div>
                 

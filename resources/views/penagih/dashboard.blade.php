@@ -51,7 +51,12 @@
         <!-- Sort & Actions -->
         <div class="flex items-center gap-2">
             <div class="relative flex-1">
-                <select name="sort_option" onchange="this.form.submit()" class="block w-full h-11 rounded-xl border border-slate-200 bg-white pl-3.5 pr-10 text-xs font-bold text-slate-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none cursor-pointer appearance-none transition-all duration-200">
+                <select onchange="
+                    const parts = this.value === 'latest-desc' ? ['id', 'desc'] : this.value.split('-');
+                    document.getElementById('sortField').value = parts[0];
+                    document.getElementById('orderField').value = parts[1];
+                    this.form.submit();
+                " class="block w-full h-11 rounded-xl border border-slate-200 bg-white pl-3.5 pr-10 text-xs font-bold text-slate-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none cursor-pointer appearance-none transition-all duration-200">
                     <option value="nama_pemilik-asc" {{ request('sort') == 'nama_pemilik' && request('order') == 'asc' ? 'selected' : '' }}>Nama (A - Z)</option>
                     <option value="nama_pemilik-desc" {{ request('sort') == 'nama_pemilik' && request('order') == 'desc' ? 'selected' : '' }}>Nama (Z - A)</option>
                     <option value="nominal-desc" {{ request('sort') == 'nominal' && request('order') == 'desc' ? 'selected' : '' }}>Tagihan Terbesar</option>
