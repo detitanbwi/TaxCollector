@@ -160,8 +160,24 @@ class PajakTagihanController extends Controller
                     'pkb' => isset($row['pkb']) ? (int) $row['pkb'] : 0,
                     'opsen' => isset($row['opsen']) ? (int) $row['opsen'] : 0,
                     'nominal' => isset($row['pkb_opsen']) ? (int) $row['pkb_opsen'] : 0,
-                    'masa_laku' => trim($row['masa_laku'] ?? ''),
-                    'masa_stnk' => trim($row['masa_stnk'] ?? ''),
+                    'masa_laku' => (function($val) {
+                        $val = trim($val ?? '');
+                        if (is_numeric($val)) {
+                            try {
+                                return \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($val)->format('d/m/Y');
+                            } catch (\Exception $e) {}
+                        }
+                        return $val;
+                    })($row['masa_laku'] ?? ''),
+                    'masa_stnk' => (function($val) {
+                        $val = trim($val ?? '');
+                        if (is_numeric($val)) {
+                            try {
+                                return \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($val)->format('d/m/Y');
+                            } catch (\Exception $e) {}
+                        }
+                        return $val;
+                    })($row['masa_stnk'] ?? ''),
                     'nomor_hp' => trim($row['nomor_hp'] ?? ''),
                 ];
             })->filter(function ($row) {
