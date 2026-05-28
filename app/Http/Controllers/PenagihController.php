@@ -25,8 +25,8 @@ class PenagihController extends Controller
         }
 
         // Sorting & Filter Status
-        $sort = $request->input('sort', 'nama_pemilik'); // default sort by nama
-        $order = $request->input('order', 'asc'); // default order ascending (A-Z)
+        $sort = $request->input('sort', 'id'); // default sort by id
+        $order = $request->input('order', 'desc'); // default order descending (Terbaru)
 
         if ($sort === 'nominal') {
             $query->orderBy('nominal', $order);

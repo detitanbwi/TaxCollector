@@ -71,8 +71,8 @@
             </div>
             
             {{-- Hidden fields for sorting details --}}
-            <input type="hidden" name="sort" id="sortField" value="{{ request('sort', 'nama_pemilik') }}">
-            <input type="hidden" name="order" id="orderField" value="{{ request('order', 'asc') }}">
+            <input type="hidden" name="sort" id="sortField" value="{{ request('sort', 'id') }}">
+            <input type="hidden" name="order" id="orderField" value="{{ request('order', 'desc') }}">
 
             @if(request('search') || request('sort'))
                 <a href="{{ route('penagih.dashboard') }}" class="h-11 px-4 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 text-slate-500 border border-slate-200 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm flex items-center justify-center whitespace-nowrap">
