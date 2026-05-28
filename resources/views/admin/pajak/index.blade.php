@@ -34,11 +34,14 @@
             </button>
         </form>
 
-        <form action="{{ route('admin.pajak.bulk-delete') }}" method="POST" x-ref="deleteForm" @submit.prevent="showDeleteConfirm = true">
+        <form action="{{ route('admin.pajak.bulk-delete') }}" method="POST" x-ref="deleteForm" @submit.prevent="showDeleteConfirm = true" class="flex gap-2 m-0">
             @csrf
             <template x-for="id in selectedIds" :key="id">
                 <input type="hidden" name="ids[]" :value="id">
             </template>
+            <button type="button" @click="openFormModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm whitespace-nowrap">
+                Tambah Data
+            </button>
             <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed" :disabled="selectedIds.length === 0">
                 Hapus <span x-text="selectedIds.length > 0 ? '(' + selectedIds.length + ')' : ''"></span>
             </button>
@@ -95,6 +98,7 @@
                     <th class="p-4 font-medium text-xs text-right">PKB + Opsen (Total)</th>
                     <th class="p-4 font-medium text-xs">Nomor HP</th>
                     <th class="p-4 font-medium text-xs text-center">Status</th>
+                    <th class="p-4 font-medium text-xs text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
@@ -125,10 +129,15 @@
                             </span>
                         @endif
                     </td>
+                    <td class="p-4 text-center">
+                        <button type="button" @click="editRow({{ json_encode($p) }})" class="text-indigo-600 hover:text-indigo-900 font-medium text-xs">
+                            Edit
+                        </button>
+                    </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="p-8 text-center text-slate-500">
+                    <td colspan="8" class="p-8 text-center text-slate-500">
                         Tidak ada data pajak ditemukan. 
                         @if(request('search')) <br> Coba sesuaikan kata kunci pencarian. @endif
                     </td>
@@ -158,29 +167,115 @@
          
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="showDeleteConfirm = false"></div>
-        
-        <!-- Modal Content -->
+               <!-- Modal Content -->
         <div class="relative bg-white rounded-3xl shadow-xl border border-slate-100 max-w-sm w-full p-6 text-center z-10 animate-in fade-in zoom-in-95 duration-200">
             <!-- Trash Icon -->
-            <div class="w-14 h-14 rounded-full bg-red-50 text-red-650 flex items-center justify-center border-4 border-white shadow-sm mx-auto mb-4">
+            <div class="w-14 h-14 rounded-full bg-red-50 text-red-600 flex items-center justify-center border-4 border-white shadow-sm mx-auto mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
             </div>
             
-            <h3 class="text-base font-black text-slate-900 uppercase tracking-wide mb-2">Hapus Data Terpilih?</h3>
+            <h3 class="text-base font-black text-slate-900 uppercase tracking-wide mb-2">Hapus <span x-text="selectedIds.length"></span> Data?</h3>
             <p class="text-xs text-slate-500 mb-6 leading-relaxed">
-                Apakah Anda yakin ingin menghapus <span class="font-extrabold text-slate-800" x-text="selectedIds.length"></span> data pajak terpilih secara permanen? Tindakan ini tidak dapat dibatalkan.
+                Apakah Anda yakin ingin menghapus data pajak yang dipilih secara permanen? Tindakan ini tidak dapat dibatalkan.
             </p>
             
             <div class="flex items-center gap-3">
                 <button type="button" @click="showDeleteConfirm = false" class="flex-1 h-11 px-4 border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 active:bg-slate-100 rounded-xl text-xs font-bold transition-all">
                     Batal
                 </button>
-                <button type="button" @click="showDeleteConfirm = false; $refs.deleteForm.submit()" class="flex-1 h-11 px-4 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-red-600/10 hover:shadow-red-600/20">
+                <button type="button" @click="$refs.deleteForm.submit()" class="flex-1 h-11 px-4 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-red-600/10 hover:shadow-red-600/20">
                     Ya, Hapus
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Form Modal -->
+    <div x-show="showFormModal" 
+         class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95"
+         style="display: none;">
+         
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="showFormModal = false"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative bg-white rounded-2xl shadow-xl border border-slate-100 max-w-2xl w-full p-6 text-left z-10">
+            <h3 class="text-lg font-bold text-slate-900 mb-4" x-text="isEdit ? 'Edit Data Pajak' : 'Tambah Data Pajak'"></h3>
+            
+            <form :action="formAction" method="POST">
+                @csrf
+                <template x-if="isEdit">
+                    <input type="hidden" name="_method" value="PUT">
+                </template>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto px-1 py-2">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Nopol <span class="text-red-500">*</span></label>
+                        <input type="text" name="nopol" x-model="form.nopol" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Nama Pemilik <span class="text-red-500">*</span></label>
+                        <input type="text" name="nama_pemilik" x-model="form.nama_pemilik" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Jenis Kendaraan</label>
+                        <input type="text" name="jenis_kendaraan" x-model="form.jenis_kendaraan" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Merek Nama</label>
+                        <input type="text" name="merek_nama" x-model="form.merek_nama" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Merek Type</label>
+                        <input type="text" name="merek_type" x-model="form.merek_type" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Tahun Buat</label>
+                        <input type="number" name="th_buat" x-model="form.th_buat" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">PKB</label>
+                        <input type="number" name="pkb" x-model="form.pkb" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Opsen</label>
+                        <input type="number" name="opsen" x-model="form.opsen" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Nominal Total <span class="text-red-500">*</span></label>
+                        <input type="number" name="nominal" x-model="form.nominal" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Nomor HP</label>
+                        <input type="text" name="nomor_hp" x-model="form.nomor_hp" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Masa Laku</label>
+                        <input type="text" name="masa_laku" x-model="form.masa_laku" placeholder="DD/MM/YYYY" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">Masa STNK</label>
+                        <input type="text" name="masa_stnk" x-model="form.masa_stnk" placeholder="DD/MM/YYYY" class="w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" @click="showFormModal = false" class="px-4 py-2 border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 rounded-xl text-sm font-medium transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-sm transition-colors">
+                        Simpan
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -300,9 +395,35 @@
             totalRecords: {{ $pajak->total() }},
             currentPageIds: [],
             showDeleteConfirm: false,
+            showFormModal: false,
+            isEdit: false,
+            formAction: '',
+            form: {
+                id: '', nopol: '', nama_pemilik: '', jenis_kendaraan: '', merek_nama: '', merek_type: '',
+                th_buat: '', pkb: '', opsen: '', nominal: '', masa_laku: '', masa_stnk: '', nomor_hp: ''
+            },
             
             init() {
                 this.currentPageIds = Array.from(document.querySelectorAll('.row-checkbox')).map(cb => cb.value);
+                
+                // Show modal automatically if there are validation errors
+                @if($errors->any())
+                    this.showFormModal = true;
+                @endif
+            },
+            
+            openFormModal() {
+                this.isEdit = false;
+                this.formAction = '{{ route('admin.pajak.store') }}';
+                this.form = { id: '', nopol: '', nama_pemilik: '', jenis_kendaraan: '', merek_nama: '', merek_type: '', th_buat: '', pkb: '', opsen: '', nominal: '', masa_laku: '', masa_stnk: '', nomor_hp: '' };
+                this.showFormModal = true;
+            },
+            
+            editRow(data) {
+                this.isEdit = true;
+                this.formAction = '/admin/pajak/' + data.id;
+                this.form = { ...data };
+                this.showFormModal = true;
             },
             
             get selectAll() {

@@ -1,6 +1,6 @@
-# Sistem Penagihan Pajak PBB Digital
+# Sistem Penagihan Pajak PKB Digital
 
-Aplikasi ini adalah Sistem Penagihan Pajak PBB Digital berbasis web yang menggunakan Laravel (versi terbaru) dan Tailwind CSS. Aplikasi ini memiliki dua antarmuka utama:
+Aplikasi ini adalah Sistem Penagihan Pajak PKB Digital berbasis web yang menggunakan Laravel (versi terbaru) dan Tailwind CSS. Aplikasi ini memiliki dua antarmuka utama:
 1. **Admin Panel** (Desktop Optimized): Digunakan oleh admin untuk mengelola pengguna (akun penagih) dan mengelola data tagihan pajak (termasuk fitur impor massal via Excel).
 2. **Portal Penagih** (Mobile-First): Digunakan oleh petugas penagih di lapangan untuk mencari tagihan berdasarkan Nomor Polisi (Nopol) dan mengirimkan pemberitahuan tagihan langsung ke WhatsApp warga.
 

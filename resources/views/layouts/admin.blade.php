@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Sistem Penagihan Pajak PBB Digital</title>
+    <title>Admin - Sistem Penagihan Pajak PKB Digital</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
         <!-- Sidebar (Desktop) -->
         <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col hidden md:flex flex-shrink-0">
             <div class="h-16 flex items-center px-6 bg-slate-950 text-white font-bold text-lg tracking-wide">
-                Admin Panel PBB
+                Admin Panel PKB
             </div>
             <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
                 <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
@@ -57,7 +57,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                    <div class="font-bold text-slate-900 text-sm">Admin PBB</div>
+                    <div class="font-bold text-slate-900 text-sm">Admin PKB</div>
                 </div>
                 <form method="POST" action="{{ route('logout') }}" class="m-0">
                     @csrf
@@ -116,7 +116,7 @@
 
             <!-- Drawer Sidebar Header -->
             <div class="h-16 flex items-center px-6 bg-slate-950 text-white font-bold text-lg tracking-wide border-b border-slate-800">
-                Admin Panel PBB
+                Admin Panel PKB
             </div>
 
             <!-- Drawer Links -->

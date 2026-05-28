@@ -2,6 +2,27 @@
 
 @section('content')
 
+<!-- Dashboard Progress Card -->
+<div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-4">
+    <div class="flex justify-between items-end mb-2">
+        <div>
+            <h2 class="text-sm font-bold text-slate-800">Progres Penagihan</h2>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">Sisa <span class="font-bold text-indigo-600">{{ $sisaTagihan }}</span> tagihan belum dikirim</p>
+        </div>
+        <div class="text-right">
+            <span class="text-2xl font-black text-indigo-700 tracking-tight">{{ $totalDitagih }}</span>
+            <span class="text-xs font-bold text-slate-400">/</span>
+            <span class="text-sm font-bold text-slate-500">{{ $totalPajak }}</span>
+        </div>
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+        <div class="bg-indigo-600 h-full rounded-full transition-all duration-700 ease-out" 
+             style="width: {{ $totalPajak > 0 ? ($totalDitagih / $totalPajak * 100) : 0 }}%"></div>
+    </div>
+</div>
+
 <!-- Search & Sort Card -->
 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-6">
     <h2 class="text-base font-black text-slate-900 mb-3 text-center uppercase tracking-wider">Daftar Target Tagihan</h2>

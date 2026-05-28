@@ -38,6 +38,52 @@ class PajakTagihanController extends Controller
         return view('admin.pajak.index', compact('pajak', 'allIds'));
     }
 
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'nopol' => 'required|string|max:255',
+            'nama_pemilik' => 'required|string|max:255',
+            'jenis_kendaraan' => 'nullable|string|max:255',
+            'merek_nama' => 'nullable|string|max:255',
+            'merek_type' => 'nullable|string|max:255',
+            'th_buat' => 'nullable|integer',
+            'pkb' => 'nullable|numeric',
+            'opsen' => 'nullable|numeric',
+            'nominal' => 'required|numeric',
+            'masa_laku' => 'nullable|string|max:255',
+            'masa_stnk' => 'nullable|string|max:255',
+            'nomor_hp' => 'nullable|string|max:255',
+        ]);
+
+        $validated['is_ditagih'] = false;
+
+        PajakTagihan::create($validated);
+
+        return redirect()->route('admin.pajak.index')->with('success', 'Data pajak berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, PajakTagihan $pajak)
+    {
+        $validated = $request->validate([
+            'nopol' => 'required|string|max:255',
+            'nama_pemilik' => 'required|string|max:255',
+            'jenis_kendaraan' => 'nullable|string|max:255',
+            'merek_nama' => 'nullable|string|max:255',
+            'merek_type' => 'nullable|string|max:255',
+            'th_buat' => 'nullable|integer',
+            'pkb' => 'nullable|numeric',
+            'opsen' => 'nullable|numeric',
+            'nominal' => 'required|numeric',
+            'masa_laku' => 'nullable|string|max:255',
+            'masa_stnk' => 'nullable|string|max:255',
+            'nomor_hp' => 'nullable|string|max:255',
+        ]);
+
+        $pajak->update($validated);
+
+        return redirect()->route('admin.pajak.index')->with('success', 'Data pajak berhasil diperbarui.');
+    }
+
     public function downloadTemplate()
     {
         return Excel::download(new class implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {

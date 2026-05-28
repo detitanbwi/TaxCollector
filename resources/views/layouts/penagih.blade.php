@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Portal Penagih - Sistem Penagihan Pajak PBB Digital</title>
+    <title>Portal Penagih - Sistem Penagihan Pajak PKB Digital</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,9 +17,15 @@
 <body class="text-slate-800 antialiased flex flex-col min-h-screen">
     
     <!-- Mobile Top Bar -->
-    <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-50">
+    <header class="text-white shadow-md sticky top-0 z-50" style="background-color: #003180;">
         <div class="px-4 h-16 flex items-center justify-between max-w-lg mx-auto w-full">
-            <div class="font-bold text-lg tracking-wide">PajakApp</div>
+            <div class="flex items-center gap-2">
+                <!-- Car Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-400" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.12 7.15L16.44 4H7.56L4.88 7.15A2 2 0 004 8.76V16a2 2 0 002 2h1v1a1 1 0 002 0v-1h6v1a1 1 0 002 0v-1h1a2 2 0 002-2V8.76c0-.58-.2-1.14-.6-1.61zM6.5 14A1.5 1.5 0 118 12.5 1.5 1.5 0 016.5 14zm11 0a1.5 1.5 0 111.5-1.5 1.5 1.5 0 01-1.5 1.5zM6 9l1.5-2.5h9L18 9z"/>
+                </svg>
+                <div class="font-bold text-lg tracking-wide">PajakApp</div>
+            </div>
             <div class="flex items-center gap-4">
                 <span class="text-sm font-medium text-indigo-100 hidden sm:inline-block">{{ auth()->user()->name }}</span>
                 <form method="POST" action="{{ route('logout') }}" class="m-0 p-0">
@@ -50,7 +56,7 @@
 
     <!-- Optional Bottom Nav or Footer for Mobile -->
     <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400 mt-auto">
-        &copy; {{ date('Y') }} Sistem Penagihan Pajak PBB Digital
+        &copy; {{ date('Y') }} Sistem Penagihan Pajak PKB Digital
     </footer>
 
 </body>

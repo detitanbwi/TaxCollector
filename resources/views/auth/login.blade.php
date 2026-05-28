@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sistem Penagihan Pajak PBB Digital</title>
+    <title>Login - Sistem Penagihan Pajak PKB Digital</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
     <div class="w-full max-w-sm">
         
         <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Pajak PBB Digital</h1>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Pajak PKB Digital</h1>
             <p class="text-slate-500 text-sm mt-1">Silakan masuk ke akun Anda</p>
         </div>
 
